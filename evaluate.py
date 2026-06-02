@@ -1,9 +1,9 @@
 # evaluate.py
 import numpy as np
 import matplotlib.pyplot as plt
-from simulator.hybrid_simulator import HybridSimulator
-from drl.ddpg_agent             import DDPGAgent
-from data.weather_generator     import SeoulWeatherGenerator
+from simulator.hybrid_sim import HybridSimulator
+from drl.ddpg_agent       import DDPGAgent
+from data.weather_gen     import SeoulWeatherGenerator
 
 STATE_MIN = np.array([0,-5,0.002,0,390,0,15,0.003,400,0],  dtype=np.float32)
 STATE_MAX = np.array([24,40,0.025,900,510,80,35,0.022,2000,50], dtype=np.float32)
