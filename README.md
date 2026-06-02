@@ -54,11 +54,6 @@ python train.py
 python evaluate.py
 ```
 
-### Main entry point
-```bash
-python main.py
-```
-
 > Note: If your local environment requires specific command-line arguments or configuration files, adjust the commands according to the code in this repository.
 
 ## Expected workflow
