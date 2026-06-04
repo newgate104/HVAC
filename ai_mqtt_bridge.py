@@ -5,14 +5,20 @@ import numpy as np
 import paho.mqtt.client as mqtt
 from datetime import datetime
 
-from drl.ddpg_agent import DDPGAgent, STATE_MIN, STATE_MAX, norm
+from drl.ddpg_agent import DDPGAgentV2
 
 # ── Cấu hình MQTT ──────────────────────────────────────────
-BROKER    = "10.200.5.25"
+BROKER    = "192.168.0.105"
 PORT      = 1883
 DEVICE_ID = "indoor-01"
 TOPIC_SUB = "sensor/indoor"
 TOPIC_PUB = f"remote-control/{DEVICE_ID}"
+
+STATE_MIN = np.array([0,-5,0.002,0,390,0,15,0.003,400,0],    dtype=np.float32)
+STATE_MAX = np.array([24,40,0.025,900,510,80,35,0.022,2000,50], dtype=np.float32)
+
+def norm(s: np.ndarray) -> np.ndarray:
+    return (np.array(s, dtype=np.float32) - STATE_MIN) / (STATE_MAX - STATE_MIN + 1e-8)
 
 def rh_to_omega(rh_pct: float, T_c: float) -> float:
     """RH [%] + T [°C] → humidity ratio omega [kg/kg]"""
@@ -52,17 +58,17 @@ def actions_to_commands(a_raw: np.ndarray) -> dict:
 
     return {
         "device_id":     DEVICE_ID,
-        "temp":          room_sp,          # TEMP_SETPOINT trên ESP32
+        "temp":          float(room_sp),          # TEMP_SETPOINT trên ESP32
         "fanPower":      "on" if fan_on else "off",
-        "operationMode": op_mode,
-        "power":         True
+        "operationMode": str(op_mode),
+        "power":         bool(True)
     }
 
 # ── AI Bridge class ─────────────────────────────────────────
 class AIBridge:
     def __init__(self, checkpoint: str = "checkpoints"):
         # Load DDPG agent (inference only, no training)
-        self.agent = DDPGAgent(state_dim=10, action_dim=4)
+        self.agent = DDPGAgentV2(state_dim=10, action_dim=4)
         self.agent.load(checkpoint)
         print(f"[AI] Loaded DDPG from '{checkpoint}/'")
 
