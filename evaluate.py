@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from simulator.hybrid_sim import HybridSimulator
-from drl.ddpg_agent       import DDPGAgent
+from drl.ddpg_agent       import DDPGAgentV2
 from data.weather_gen     import SeoulWeatherGenerator
 
 STATE_MIN = np.array([0,-5,0.002,0,390,0,15,0.003,400,0],  dtype=np.float32)
@@ -13,7 +13,7 @@ def ddpg2sim(a): return (np.clip(a,-1,1)+1)/2
 
 def evaluate(use_trained: bool = True):
     sim     = HybridSimulator()
-    agent   = DDPGAgent()
+    agent   = DDPGAgentV2()
     weather = SeoulWeatherGenerator(seed=99)
 
     if use_trained:
@@ -118,7 +118,7 @@ def evaluate(use_trained: bool = True):
 
     for ax in axes.flat: ax.set_xlabel('Hour'); ax.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f'logs/eval_{"trained" if use_trained else "random"}.png', dpi=130)
+    plt.savefig(f'logs/eval_{"trained" if use_trained else "random"}_v2.png', dpi=130)
     plt.show()
 
 

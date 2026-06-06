@@ -17,7 +17,6 @@ class HVACRegressionModel:
         # Hệ số cho E_fan (Eq.24) — calibrate từ Fig.12(c)
         self.b_Efan = [0.01, -0.02, 0.5, 3.0]  # [b0,b1,b2,b3]
 
-        self.T_sa_sp = 12.5  # °C — setpoint nhiệt độ gió cấp (Section 3.4.2)
         self.phi_sa  = 0.90  # RH gió cấp khi dehumid mode
 
     def calc_airflow(self, f_sa, D_oa):
@@ -42,11 +41,22 @@ class HVACRegressionModel:
         """
         Tính trạng thái gió cấp sau coil làm lạnh
         Returns: T_sa [°C], omega_sa [kg/kg]
+        Sửa: không luôn dehumid về 12.5°C — chỉ khi thực sự cần.
         """
-        # Giả sử điều khiển về setpoint 12.5°C
-        T_sa = self.T_sa_sp
-        # Nếu cần dehumid: omega_sa tính từ phi_sa=90% tại T_sa
-        omega_sa_sat = 0.622 * (0.006112 * np.exp(17.67*T_sa/(T_sa+243.5))) \
-                       / (101.325 - 0.006112 * np.exp(17.67*T_sa/(T_sa+243.5)))
-        omega_sa = self.phi_sa * omega_sa_sat
-        return T_sa, min(omega_sa, omega_mixed)
+        # Nhiệt độ gió cấp: bị giới hạn bởi T_chws + deadband (không thể lạnh hơn T_chws)
+        T_sa = max(T_chws_sp + 2.0, min(T_mixed, 18.0))  # [T_chws+2, 18]°C
+
+        # omega_sa: chỉ dehumid nếu T_sa đủ thấp để ngưng tụ
+        omega_sat_at_Tsa = (0.622 * 0.6112 * np.exp(17.67 * T_sa / (T_sa + 243.5))
+                        / (101.325 - 0.6112 * np.exp(17.67 * T_sa / (T_sa + 243.5))))
+
+        if T_sa < 14.0:
+            # Dehumidification mode: phi_sa = 90%
+            omega_sa = 0.90 * omega_sat_at_Tsa
+        else:
+            # Sensible cooling only: omega không đổi (không ngưng tụ)
+            omega_sa = omega_mixed
+
+        # Không được khô hơn omega_sat
+        omega_sa = min(omega_sa, omega_sat_at_Tsa)
+        return float(T_sa), float(omega_sa)

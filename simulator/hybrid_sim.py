@@ -22,7 +22,7 @@ class HybridSimulator:
     V_ZONE     = 56 * 4.88
 
     # Hệ số reward (Section 3.3.2)
-    ALPHA = [1.0, 2.5, 5.0, 1.0, 1.0]
+    ALPHA    = [1.0, 2.5, 5.0, 1.0, 1.0]
     T_U, T_L = 24.5, 22.0   # °C ngưỡng nhiệt độ
     PHI_U    = 0.60          # ngưỡng RH
 
@@ -132,8 +132,8 @@ class HybridSimulator:
         """Eq.(15–20)"""
         a1, a2, a3, a4, a5 = self.ALPHA
 
-        f_T   = max(0, Tza - self.T_U) + max(0, self.T_L - Tza)  # Eq.17
-        f_phi = max(0, phi_za - self.PHI_U)                        # Eq.18
+        f_T   = max(0, Tza - self.T_U) + max(0, self.T_L - Tza)   # Eq.17
+        f_phi = max(0, phi_za - self.PHI_U)                       # Eq.18
         f_co2 = 1.0 if C_CO2 >= 1000 else 0.0                     # Eq.19
         f_pm  = 1.0 if C_PM  >= 10   else 0.0                     # Eq.20
 

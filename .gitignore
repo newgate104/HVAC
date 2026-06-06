@@ -1,15 +1,7 @@
-miniconda3/
-Miniconda3-latest-Linux-x86_64.sh
-checkpoints/*.h5
-
 __pycache__/
 *.pyc
 *.pyo
 
-.ipynb_checkpoints/
-
 .env
 venv/
 .venv/
-
-logs/
