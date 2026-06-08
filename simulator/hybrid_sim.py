@@ -23,8 +23,8 @@ class HybridSimulator:
 
     # Hệ số reward (Section 3.3.2)
     ALPHA    = [1.0, 2.5, 5.0, 1.0, 1.0]
-    T_U, T_L = 24.5, 22.0   # °C ngưỡng nhiệt độ
-    PHI_U    = 0.60          # ngưỡng RH
+    T_U, T_L = 26.5, 24    # °C ngưỡng nhiệt độ Hà Nội (mới) (cũ 22-24.5)
+    PHI_U    = 0.70          # ngưỡng RH
 
     def __init__(self):
         self.envelope = BuildingEnvelopeModel()
@@ -34,7 +34,7 @@ class HybridSimulator:
         self.hvac      = HVACRegressionModel()
 
         # Trạng thái ẩn
-        self.Tw = 24.0  # °C — nhiệt độ khối nhiệt tường
+        self.Tw = 26.0  # °C — nhiệt độ khối nhiệt tường
 
     def _occupancy_schedule(self, hour):
         """Lịch chiếm dụng theo Fig.7 — weekday"""

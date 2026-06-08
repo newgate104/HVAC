@@ -13,7 +13,7 @@ from .networks      import build_actor, build_critic
 from .replay_buffer import ReplayBuffer
 from .ou_noise      import OUNoise
 
-WARMUP_SIZE = 10_000   # số samples tối thiểu trước khi train
+WARMUP_SIZE = 200_000   # số samples tối thiểu trước khi train
 GRAD_NORM   = 1.0      # gradient clip norm
 CRITIC_FREQ = 2        # critic update mỗi bước
 ACTOR_FREQ  = 1        # actor update mỗi CRITIC_FREQ bước
