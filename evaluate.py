@@ -17,7 +17,7 @@ def evaluate(use_trained: bool = True):
     sim     = HybridSimulator()
     agent   = DDPGAgentV2()
     weather = HanoiWeatherLoader(                             # SỬA 2
-                  epw_path="data/VNM_NVN_Ha.Dong.488250_TMYx.epw",
+                  epw_path="data/VNM_NVN_Hanoi-Noi.Bai.Intl.AP.488200_TMYx.epw",
                   noise_std=0.02)
 
     if use_trained:
@@ -29,7 +29,7 @@ def evaluate(use_trained: bool = True):
     T_day, om_day, qs_day, pm_day = weather.generate_day(month=7)
 
     state = np.array([0.0, T_day[0], om_day[0], qs_day[0],
-                      450.0, pm_day[0], 24.0, 0.010, 600.0, 5.0], dtype=np.float32)
+                      450.0, pm_day[0], 26.0, 0.010, 600.0, 5.0], dtype=np.float32)
 
     log = {k: [] for k in ['Tza','phi','CO2','PM','E','r',
                             'f_T','f_phi','f_co2','f_pm',
@@ -54,8 +54,8 @@ def evaluate(use_trained: bool = True):
         CO2  = next_s[8]
         PM   = next_s[9]
         E    = info['E_kWh']
-        f_T  = max(0, Tza-24.5) + max(0, 22-Tza)
-        f_ph = max(0, phi-0.60)
+        f_T  = max(0, Tza-26.5) + max(0, 24-Tza)
+        f_ph = max(0, phi-0.70)
         f_c  = 1.0 if CO2 >= 1000 else 0.0
         f_pm = 1.0 if PM  >= 10   else 0.0
 
@@ -97,14 +97,14 @@ def evaluate(use_trained: bool = True):
 
     # ---- Plot ----
     fig, axes = plt.subplots(4, 2, figsize=(14, 10))
-    fig.suptitle(f'{label} — 1 ngày tháng 7 Seoul', fontsize=13)
+    fig.suptitle(f'{label} — 1 ngày tháng 7 Hanoi', fontsize=13)
 
-    axes[0,0].plot(hours, log['Tza'], 'r'); axes[0,0].axhline(24.5,ls='--',c='gray')
+    axes[0,0].plot(hours, log['Tza'], 'r'); axes[0,0].axhline(26.5,ls='--',c='gray')
     axes[0,0].axhline(22, ls='--', c='gray'); axes[0,0].set_title('Nhiệt độ (°C)')
-    axes[0,0].set_ylabel('°C'); axes[0,0].fill_between(hours,[22]*96,[24.5]*96,alpha=0.1,color='green')
+    axes[0,0].set_ylabel('°C'); axes[0,0].fill_between(hours,[24]*96,[26.5]*96,alpha=0.1,color='green')
 
     axes[0,1].plot(hours, [x*100 for x in log['phi']], 'b')
-    axes[0,1].axhline(60, ls='--', c='gray'); axes[0,1].set_title('Relative Humidity (%)')
+    axes[0,1].axhline(70, ls='--', c='gray'); axes[0,1].set_title('Relative Humidity (%)')
 
     axes[1,0].plot(hours, log['CO2'], 'g'); axes[1,0].axhline(1000,ls='--',c='gray')
     axes[1,0].set_title('CO₂ (ppm)')
@@ -122,7 +122,7 @@ def evaluate(use_trained: bool = True):
 
     for ax in axes.flat: ax.set_xlabel('Hour'); ax.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f'logs/eval_{"trained" if use_trained else "random"}_v2.png', dpi=130)
+    plt.savefig(f'logs/eval_{"trained" if use_trained else "random"}_noibai.png', dpi=130)
     plt.show()
 
 
