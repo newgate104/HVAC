@@ -65,7 +65,7 @@ class HanoiWeatherLoader:
                     'rh_oa':  float(parts[8]),      # %
                     'P_atm':  float(parts[9]),      # Pa
                     'q_sol':  max(0.0, float(parts[13])),  # W/m² GHI
-                    'omega_oa': self._dp_to_omega(T_dp, P_atm),
+                    'omega_oa': self._dp_to_omega(float(parts[7]), float(parts[9])),
                 })
             except (ValueError, IndexError):
                 continue

@@ -44,7 +44,7 @@ class HVACRegressionModel:
         Sửa: không luôn dehumid về 12.5°C — chỉ khi thực sự cần.
         """
         # Nhiệt độ gió cấp: bị giới hạn bởi T_chws + deadband (không thể lạnh hơn T_chws)
-        T_sa = max(T_chws_sp + 2.0, min(T_mixed, 18.0))  # [T_chws+2, 18]°C
+        T_sa = max(T_chws + 2.0, min(T_mixed, 18.0))  # [T_chws+2, 18]°C
 
         # omega_sa: chỉ dehumid nếu T_sa đủ thấp để ngưng tụ
         omega_sat_at_Tsa = (0.622 * 0.6112 * np.exp(17.67 * T_sa / (T_sa + 243.5))

@@ -3,22 +3,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 from simulator.hybrid_sim import HybridSimulator
 from drl.ddpg_agent       import DDPGAgentV2
-from data.weather_gen     import SeoulWeatherGenerator
+from data.hanoi_weather   import HanoiWeatherLoader
 
-STATE_MIN = np.array([0,-5,0.002,0,390,0,15,0.003,400,0],  dtype=np.float32)
-STATE_MAX = np.array([24,40,0.025,900,510,80,35,0.022,2000,50], dtype=np.float32)
+STATE_MIN = np.array([0,-5,0.002,0,390,0,15,0.003,400,0], dtype=np.float32)
+STATE_MAX = np.array([24,40,0.025,900,510,150,35,0.022,2000,50], dtype=np.float32)
 
-def norm(s): return (np.array(s)-STATE_MIN)/(STATE_MAX-STATE_MIN+1e-8)
-def ddpg2sim(a): return (np.clip(a,-1,1)+1)/2
+def norm(s):
+    return (np.array(s, dtype=np.float32)-STATE_MIN)/(STATE_MAX-STATE_MIN+1e-8)
+def ddpg2sim(a):
+    return (np.clip(a,-1,1)+1)/2
 
 def evaluate(use_trained: bool = True):
     sim     = HybridSimulator()
     agent   = DDPGAgentV2()
-    weather = SeoulWeatherGenerator(seed=99)
+    weather = HanoiWeatherLoader(                             # SỬA 2
+                  epw_path="data/VNM_NVN_Ha.Dong.488250_TMYx.epw",
+                  noise_std=0.02)
 
     if use_trained:
-        agent.load('checkpoints')
-        label = 'DRL (trained)'
+        agent.load('checkpoints_hanoi')
+        label = 'DRL_hanoi (trained)'
     else:
         label = 'Random policy'
 
