@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-slate-900 bg-slate-100;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0px rgba(239, 68, 68, 0); }
+  50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+}
+
+.animate-critical {
+  animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

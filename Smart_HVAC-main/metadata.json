@@ -1,0 +1,6 @@
+{
+  "name": "HVAC Sentinel",
+  "description": "Real-time mission-critical HVAC monitoring and control dashboard for enterprise air quality and climate management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

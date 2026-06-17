@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Ho_Chi_Minh
+    depends_on:
+      - mqtt-subscriber
+    restart: always
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: timescaledb
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      POSTGRES_DB: iotdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+
+  mqtt-subscriber:
+    build: ./mqtt-subscriber
+    container_name: mqtt-subscriber
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+      - timescaledb
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      MQTT_BROKER: mosquitto
+      MQTT_PORT: 1883
+      DB_HOST: timescaledb
+      DB_NAME: iotdb
+      DB_USER: admin
+      DB_PASSWORD: admin123
+      API_PORT: 5000
+      CONTROL_TOPIC: remote-control
+      PYTHONUNBUFFERED: 1
+
+volumes:
+  timescale_data:
